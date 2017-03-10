@@ -78,7 +78,7 @@ Having a standard way of writing CSS means that code will always look and feel f
 
 - SASS or SCSS
 - Two (2) space indents, no tabs.
-- Use dashes over camelCasing & under_scores in class names.
+- Follow BEM naming convention.
 - Do not use ID selectors.
 - Properly written multi-line CSS rules.
 - One selector per line, one rule per line.
@@ -86,8 +86,7 @@ Having a standard way of writing CSS means that code will always look and feel f
 - Include a space after each comma in comma-separated property or function values.
 - Include a semi-colon at the end of the last declaration in a declaration block.
 - The closing brace should be on its own line.
-- Use lowercase and shorthand hex values.
-- A new line after the closing brace.
+- Use hex values.
 - Separate each ruleset by a blank line.
 - Avoid writing vendor prefixed CSS.
 
@@ -110,14 +109,14 @@ Having a standard way of writing CSS means that code will always look and feel f
 
 ###ID Selectors
 
-While it is possible to select elements by ID in CSS, it should generally be considered an anti-pattern. ID selectors introduce an unnecessary high level of specificity to your rule declarations. Most importantly, they are not re-usable.
+While it is possible to select elements by ID in CSS, it should generally be considered an anti-pattern. ID selectors introduce an unnecessary high level of specificity to your rule declarations. Most importantly, they are not re-usable. And they are put to better use by using them to select elements with JS. So, in order to avoid problems with change in class names, and JS functionality being broken, do not use IDs as they are reserved for JS functionality.
 
 ###Quotes
 
 Neither CSS nor Sass require strings to be quoted, but because the vast majority of other languages do require strings to be quoted, and for the sake of consistency, we believe strings should be quoted in all situations other than the few detailed below. Besides consistency, there are several other reasons for this choice:
 
 - color names are treated as colors when unquoted
-- most syntax highlighters will choke on unquoted strings
+- most syntax highlighters will throw an error on unquoted strings
 - helps with general readability
 
 URLs:
@@ -167,13 +166,9 @@ $font-type: 'sans-serif';
 
 ###Lists
 
-Lists are the Sass equivalent of arrays. A list is a flat data structure (not to be confused with maps) intended to store values or any type.
-
 - multiline
 - always comma separated (even last item)
 - always wrapped in parenthesis
-
-(Disclaimer: while single line is correct, for legibility purposes, we are sticking with multiline. )
 
 ```sass
 // Correct
@@ -201,8 +196,6 @@ Further Reading:
 - [Working with lists & @each loops](https://benfrain.com/working-with-lists-and-each-loops-in-sass-with-the-index-and-nth-function/)
 
 ###Maps
-
-The Sass term for associative arrays, hashes or even JavaScript objects. A map is a data structure mapping keys.
 
 - spaces after the colon `:`
 - opening braces `(` on the same line as the colon `:`
@@ -267,77 +260,29 @@ Further Reading:
   }
 }
 ```
-###State Rules
-
-A state is something that augments and overrides all other styles. For example, an accordion section may be in a collapsed or expanded state. To indicate the sate, we may add a class indicating the state.
-
-States are generally applied to the same element as a layout rule or to the same element as a base module class.
-
-```html
-<dl>
-  <dt>
-    Lorem ipsum dolor sit amet
-  </dt>
-  <dd class="is-open">
-    Ut rhoncus tempus dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  </dd>
-</dl>
-```
-
-Some possible states:
-
-- is-active
-- is-hidden
-- is-closed
-- is-enabled
-- is-open
 
 ###JavaScript Hooks
 
 Avoid binding to the same class in both your CSS and JavaScript. Conflating the two often leads to, at a minimum, time wasted during refactoring when a developer must cross-reference each class they are changing, and at its worst, developers being afraid to make changes for fear of breaking functionality.
 
-We recommend creating JavaScript specific classes to bind to, prefixed with `js-`
+We recommend creating JavaScript specific classes to bind to, by adding the suffix `JS`
 
 ```html
-<button type="button" class="button nav-trigger js-nav-trigger">Menu</button>
+<button type="button" class="nav__trigger__button nav__trigger__buttonJS">Menu</button>
 ```
 
 #Nesting Selectors
 
-We recommend nesting selectors no more than three levels deep. However, if naming conventions are followed, you shouldn’t need to be going more than 2 deep.
+We recommend nesting selectors no more than three levels deep.
 
-```sass
-.page {
-  .content {
-    .element {
-      // STOP
-    }
-  }
-}
-```
-
-When selectors become this long, you’re likely writing CSS that is:
-
-- strongly coupled to the HTML
-- overly specific
-- not reusable
 
 #CSS Selectors
 - Avoid using ID’s for style.
 - Use meaningful names: `$visual-grid-color` not `$color` or `$vslgrd-clr`.
 - Avoid using the direct descendant selector `>`.
-- Avoid nesting more than 3 selectors deep.
 - Avoid using HTML tags in class names: `.news` not `.news-section`
 - Avoid using HTML tags on classes for generic markup: `div.widgets`
 - Avoid nesting within a media query.
-
-###Reusability
-
-With a move toward a more component-based approach to constructing UIs, the idea of reusability is paramount. We want the option to be able to move, recycle, duplicate, and syndicate components across our projects.
-
-To this end, we make heavy use of classes. IDs, as well as being hugely over-specific, cannot be used more than once on any given page, whereas classes can be reused an infinite amount of times. Everything you choose, from the type of selector to its name, should lend itself toward being reused.
-
-[(source)](http://cssguidelin.es/#reusability)
 
 ###Location Independence
 
@@ -347,21 +292,6 @@ A component shouldn’t have to live in a certain place to look a certain way.
 
 [(source)](http://cssguidelin.es/#location-independence)
 
-###Portability
-
-Reducing, or, ideally, removing, location dependence means that we can move components around our markup more freely, but how about improving our ability to move classes around components? On a much lower level, there are changes we can make to our selectors that make the selectors themselves—as opposed to the components they create—more portable. Take the following example:
-
-```css
-input.btn {}
-```
-
-This is a qualified selector; the leading input ties this ruleset to only being able to work on <input> elements. By omitting this qualification, we allow ourselves to reuse the .btn class on any element we choose, like an <a>, for example, or a <button>.
-
-Qualified selectors do not lend themselves well to being reused, and every selector we write should be authored with reuse in mind.
-
-Of course, there are times when you may want to legitimately qualify a selector—you might need to apply some very specific styling to a particular element when it carries a certain class.
-
-[(source)](http://cssguidelin.es/#portability)
 
 ###Performance
 
@@ -448,22 +378,6 @@ Further reading:
 - [DRY-ing Out Your Sass Mixins](http://alistapart.com/article/dry-ing-out-your-sass-mixins)
 - [The Mixin Directive](http://www.sitepoint.com/sass-basics-the-mixin-directive/)
 
-###Placeholders
-
-Unlike mixins, placeholders can be used multiple times without being printed out in the stylesheet. Just like `extends()`, placeholders group selectors.
-
-Some examples where a placeholder is most fitting:
-
-- Typography
-- Re-usable chunks of properties (shadows, font styles, background styles … etc)
-
-Further reading:
-- [Understanding Placeholder Selectors](http://thesassway.com/intermediate/understanding-placeholder-selectors)
-- [Dynamic Placeholders](http://advancedsass.com/articles/dynamic-placeholders-in-sass.html)
-
----
-#Suggested
-The following section contains suggested ideas, it's up to you whether you want to apply it to your project.
 
 ###Property Ordering
 
@@ -490,61 +404,3 @@ Here is a suggested declaration order:
 - Miscellaneous: Pointers, Overflows, Scrolling …
 - Z-index
 
-###Naming Conventions
-
-Naming conventions in CSS are hugely useful in making your code strict, transparent, & more informative. A good naming convention will be able to tell you:
-
-- what type of thing a class does
-- where a class can be used
-- what else a class might be related to
-
-Additionally you can prefix your class names with the type of pattern they belong to. This makes it fundamentally easier to associate not only the place your styles are located at, but JavaScript too.
-
-| Class           | Use                                                                    |
-|-----------------|------------------------------------------------------------------------|
-| .comp-          | for components                                                         |
-| .mod-           | for modular elements comprised of components                           |
-| .sec-           | for sections inside of a container                                     |
-| .landing-       | for indicating the content container (without global header or footer) |
-| .page- / .node- | for indicating the page                                                |
-
-An example below:
-
-- We have a body class of .page-about in case we need to add high level styles
-- We’re using `.global-` prefix on the global header and footer
-- If we need to add specific styling to the about content, we can do so through `.landing-about`. Or if we need to over-write component or module styles that are a bit unique or different on the about page. We can do so through `.landing-about` without going on the high level body class.
-- Our banner is reused on all content pages. We use the `.mod-` prefix indicating that.
-- Our content specific to the about page like history, timeline, & team will not be used on any other pages. Because of that we’ll prefix it with `.sec-`
-
-```html
-<body class="page-about">
-  <header class="global-header"></header>
-  <article class="landing-about">
-    <header class="mod-banner"></header>
-    <div class="mod-slider"></div>
-    <div class="sec-history"></div>
-    <div class="sec-timeline"></div>
-    <div class="sec-team"></div>
-  </article>
-  <footer class="global-footer"></footer>
-</body>
-```
-
-Because of our prefixing, we’re able to nest less within the Sass, but also able to organize our styles into components, modules, & pages.
-
-Our about styles would contain:
-
-```sass
-.landing-about {
-  /* styles overwriting any components or modules */
-}
-.sec-history {
-  /* styles specific to history */
-}
-.sec-timeline {
-  /* styles specific to timeline */
-}
-.sec-team {
-  /* styles specific to team */
-}
-```
